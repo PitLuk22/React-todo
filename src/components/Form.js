@@ -80,7 +80,7 @@ S.Overlay = styled.div`
 S.Form = styled.form`
 	position: relative;
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 20px;
 	border: 2px solid #7f0e93;
@@ -89,6 +89,7 @@ S.Form = styled.form`
 	z-index: 4;
 	input {
 		flex: 1;
+		min-width: 20px;
 		font-size: 18px;
 		padding: 15px 20px;
 		border: none;
@@ -98,8 +99,7 @@ S.Form = styled.form`
 		color: #fff;
 	}
 	button {
-		width: 120px;
-		padding: 15px 0;
+		padding: 15px;
 		text-align: center;
 		font-size: 18px;
 		border: none;
@@ -110,6 +110,16 @@ S.Form = styled.form`
 		transition: .3s;
 		&:hover {
 			color: #e9c5ff;
+		}
+	}
+	@media(max-width: 576px) {
+		input{
+			padding: 15px 15px;
+			font-size: 10px;
+		}
+		button{
+			padding:  15px 10px;
+			font-size: 10px;
 		}
 	}
 `;

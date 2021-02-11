@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import Form from './Form';
-import Item from './Item';
+import List from './List';
 // DnD
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 // Styles
 import styled from 'styled-components';
 // Redux
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { changeOrder } from '../actions';
 
 function App() {
@@ -17,44 +17,18 @@ function App() {
 		id: null,
 		text: ''
 	});
+
 	const dispatch = useDispatch();
-	const todos = useSelector(state => state);
 
 	// Drag
-	const onDragEndHandler = (result) => {
-
-		const sourceIndex = result.source.index;
-		const destinationIndex = result.destination.index;
-
-		const [sourceItem] = todos.splice(sourceIndex, 1)
-		todos.splice(destinationIndex, 0, sourceItem)
-
-		dispatch(changeOrder(todos))
-	}
-
+	const onDragEndHandler = (result) => dispatch(changeOrder(result))
 
 	return (
 		<S.TodoBlock>
 			<h1>Pit's TODO list</h1>
 			<Form input={input} isRewrite={isRewrite} setIsRewrite={setIsRewrite} />
 			<DragDropContext onDragEnd={onDragEndHandler}>
-				<Droppable droppableId='todos'>
-					{(provided) => (
-						<ul {...provided.droppableProps} ref={provided.innerRef}>
-
-							{todos.map((todo, index) =>
-								<Item
-									key={todo.id}
-									{...todo}
-									index={index}
-									setIsRewrite={setIsRewrite}
-									input={input} />
-							)}
-
-							{provided.placeholder}
-						</ul>
-					)}
-				</Droppable>
+				<List input={input} setIsRewrite={setIsRewrite} />
 			</DragDropContext>
 		</S.TodoBlock>
 	);
@@ -78,5 +52,13 @@ S.TodoBlock = styled.div`
 		color: #fff;
 		margin: 0 0 20px 0;
 		font-size: 40px;
+	}
+
+	@media(max-width: 576px) {
+		width: 90%;
+		padding: 20px 35px;
+		h1 {
+			font-size: 25px;
+		}
 	}
 `;

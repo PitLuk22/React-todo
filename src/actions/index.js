@@ -34,9 +34,9 @@ export const isDoneTodo = (id, isDone) => {
 		}
 	}
 }
-export const changeOrder = (todos) => {
+export const changeOrder = (result) => {
 	return {
 		type: 'CHANGE_ORDER',
-		payload: todos
+		payload: result
 	}
 }

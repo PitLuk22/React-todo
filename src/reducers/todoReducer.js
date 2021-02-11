@@ -31,9 +31,13 @@ const todoReducer = (state = initialState, action) => {
 				...state.map(todo => todo.id === action.payload.id ? { ...todo, isDone: !action.payload.isDone } : todo)
 			]
 		case 'CHANGE_ORDER':
-			return [
-				...action.payload
-			]
+			const sourceIndex = action.payload.source.index;
+			const destinationIndex = action.payload.destination.index;
+			const copyState = state.slice();
+			const [sourceItem] = copyState.splice(sourceIndex, 1)
+			copyState.splice(destinationIndex, 0, sourceItem)
+
+			return [...copyState]
 		default:
 			return state
 	}

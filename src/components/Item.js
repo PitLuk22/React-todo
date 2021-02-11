@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteTodo, isDoneTodo } from '../actions'
 // Styles
 import styled from 'styled-components';
-// import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { fadeIn } from '../animations';
 // Icons 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -34,34 +34,38 @@ const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 
 
 	return (
+
 		<Draggable draggableId={id} index={index}>
 			{(provided) => (
-				<>
-					{!isDelete && <S.TodoItem
-						{...provided.draggableProps}
-						{...provided.dragHandleProps}
-						ref={provided.innerRef}
-						colors={colors}
-						isDone={isDone}
-						variants={fadeIn}
-						initial='hidden'
-						animate='show'
-						exit='exit'>
-						<div>
-							<FontAwesomeIcon icon={faBars} size='lg' className='drag-item' />
-							<span>{text}</span>
-						</div>
-						<LottieFireWorks isDone={isDone} />
-						<S.Icons className='icons' isDone={isDone}>
-							<FontAwesomeIcon icon={isDone ? faTimesCircle : faCheckCircle} size='lg' onClick={() => setIsDoneHandler()} />
-							<FontAwesomeIcon icon={faPen} size='lg' onClick={() => {
-								setIsRewrite({ cond: true, id, text })
-								input.current.focus();
-							}} />
-							<FontAwesomeIcon icon={faTrashAlt} size='lg' onClick={onDeleteHandler} />
-						</S.Icons>
-					</S.TodoItem>}
-				</>
+				<S.Li
+					{...provided.draggableProps}
+					{...provided.dragHandleProps}
+					ref={provided.innerRef}
+				>
+					<AnimatePresence>
+						{!isDelete && <S.TodoItem
+							colors={colors}
+							isDone={isDone}
+							variants={fadeIn}
+							initial='hidden'
+							animate='show'
+							exit='exit'>
+							<div className='todo-content'>
+								<FontAwesomeIcon icon={faBars} size='sm' />
+								<span>{text}</span>
+							</div>
+							<LottieFireWorks isDone={isDone} />
+							<S.Icons className='icons' isDone={isDone}>
+								<FontAwesomeIcon icon={isDone ? faTimesCircle : faCheckCircle} size='lg' onClick={() => setIsDoneHandler()} />
+								<FontAwesomeIcon icon={faPen} size='lg' onClick={() => {
+									setIsRewrite({ cond: true, id, text })
+									input.current.focus();
+								}} />
+								<FontAwesomeIcon icon={faTrashAlt} size='lg' onClick={onDeleteHandler} />
+							</S.Icons>
+						</S.TodoItem>}
+					</AnimatePresence>
+				</S.Li>
 			)}
 		</Draggable>
 	)
@@ -70,26 +74,30 @@ const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 export default Item;
 
 const S = {};
-S.TodoItem = styled.li`
+S.Li = styled.li`
+	margin-bottom: 10px;
+`;
+S.TodoItem = styled(motion.div)`
 	position: relative;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 20px;
-	margin-bottom: 10px;
 	font-size: 17px;
 	font-weight: 600;
 	background: ${props => `linear-gradient(to left, ${props.colors[1]}, ${props.colors[0]} )`};
 	color: #fff;
 	border-radius: 5px;
 	overflow: hidden;
+	.todo-content {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
 	span {
 		margin: 0 20px;
 	}
-	.drag-bars {
-		cursor: move;
-	}
-	&:hover .icons{
+	&:hover .icons{			
 		opacity: 1;
 	}
 	&:after {
@@ -104,6 +112,13 @@ S.TodoItem = styled.li`
 		background-color: rgba(0,0,0, .7);
 		box-shadow: 10px 0 10px 20px rgba(0,0,0,.7);
 		transition: all .5s ease;
+	}
+	@media(max-width: 576px) {
+		font-size: 11px;
+		padding: 20px 10px;
+		span {
+			margin: 0 10px;
+		}
 	}
 `;
 
@@ -134,5 +149,9 @@ S.Icons = styled.div`
 				color: #ff4f4f;
 			}
 		}
+	}
+	@media(max-width: 576px) {
+		font-size: 11px;
+		min-width: 70px;
 	}
 `;
