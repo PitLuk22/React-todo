@@ -5,13 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteTodo, isDoneTodo } from '../actions'
 // Styles
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+// import { motion, AnimatePresence } from 'framer-motion';
 import { fadeIn } from '../animations';
 // Icons 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen, faTrashAlt, faCheckCircle, faTimesCircle, faBars } from '@fortawesome/free-solid-svg-icons'
 
-const Item = ({ input, id, text, colors, setIsRewrite, onDragStartHandler, onDragOverHandler, onDragLeaveHandler, onDragEndHandler, onDropHandler }) => {
+import { Draggable } from 'react-beautiful-dnd';
+
+
+const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 
 	const [isDelete, setIsDelete] = useState(false);
 	const dispatch = useDispatch();
@@ -31,36 +34,36 @@ const Item = ({ input, id, text, colors, setIsRewrite, onDragStartHandler, onDra
 
 
 	return (
-		<>
-			{!isDelete && <S.TodoItem
-				className='drag-item'
-				draggable={true}
-				onDragStart={(e) => onDragStartHandler(e)}
-				onDragLeave={(e) => onDragLeaveHandler(e)}
-				onDragEnd={(e) => onDragEndHandler(e)}
-				onDragOver={(e) => onDragOverHandler(e)}
-				onDrop={(e) => onDropHandler(e)}
-				colors={colors}
-				isDone={isDone}
-				variants={fadeIn}
-				initial='hidden'
-				animate='show'
-				exit='exit'>
-				<div>
-					<FontAwesomeIcon icon={faBars} size='lg' className='drag-item' />
-					<span>{text}</span>
-				</div>
-				<LottieFireWorks isDone={isDone} />
-				<S.Icons className='icons' isDone={isDone}>
-					<FontAwesomeIcon icon={isDone ? faTimesCircle : faCheckCircle} size='lg' onClick={() => setIsDoneHandler()} />
-					<FontAwesomeIcon icon={faPen} size='lg' onClick={() => {
-						setIsRewrite({ cond: true, id, text })
-						input.current.focus();
-					}} />
-					<FontAwesomeIcon icon={faTrashAlt} size='lg' onClick={onDeleteHandler} />
-				</S.Icons>
-			</S.TodoItem>}
-		</>
+		<Draggable draggableId={id} index={index}>
+			{(provided) => (
+				<>
+					{!isDelete && <S.TodoItem
+						{...provided.draggableProps}
+						{...provided.dragHandleProps}
+						ref={provided.innerRef}
+						colors={colors}
+						isDone={isDone}
+						variants={fadeIn}
+						initial='hidden'
+						animate='show'
+						exit='exit'>
+						<div>
+							<FontAwesomeIcon icon={faBars} size='lg' className='drag-item' />
+							<span>{text}</span>
+						</div>
+						<LottieFireWorks isDone={isDone} />
+						<S.Icons className='icons' isDone={isDone}>
+							<FontAwesomeIcon icon={isDone ? faTimesCircle : faCheckCircle} size='lg' onClick={() => setIsDoneHandler()} />
+							<FontAwesomeIcon icon={faPen} size='lg' onClick={() => {
+								setIsRewrite({ cond: true, id, text })
+								input.current.focus();
+							}} />
+							<FontAwesomeIcon icon={faTrashAlt} size='lg' onClick={onDeleteHandler} />
+						</S.Icons>
+					</S.TodoItem>}
+				</>
+			)}
+		</Draggable>
 	)
 }
 

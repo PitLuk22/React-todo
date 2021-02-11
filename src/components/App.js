@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import Form from './Form';
-import Item from './Item'
+import Item from './Item';
+// DnD
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 // Styles
 import styled from 'styled-components';
 // Redux
@@ -15,64 +17,45 @@ function App() {
 		id: null,
 		text: ''
 	});
-	const [currentTodo, setCurrentTodo] = useState(null);
 	const dispatch = useDispatch();
 	const todos = useSelector(state => state);
 
 	// Drag
-	const onDragStartHandler = (e, todo) => {
+	const onDragEndHandler = (result) => {
 
-		setCurrentTodo(todo)
+		const sourceIndex = result.source.index;
+		const destinationIndex = result.destination.index;
 
-		e.target.style.outline = '1px dashed black';
-		e.target.style.opacity = '.7';
-	}
-	const onDragOverHandler = (e) => {
-		e.preventDefault();
-		if (e.target.className.includes('drag-item')) {
-			e.target.style.boxShadow = '0 5px 5px #8f06a7';
-		}
-	}
-	const onDragLeaveHandler = (e) => {
-		e.target.style.boxShadow = 'none';
-	}
-	const onDragEndHandler = (e) => {
-		e.target.style.boxShadow = 'none';
-		e.target.style.outline = 'none';
-		e.target.style.opacity = '1';
-	}
-	const onDropHandler = (e, todo) => {
-		e.preventDefault();
-		e.target.style.boxShadow = 'none';
+		const [sourceItem] = todos.splice(sourceIndex, 1)
+		todos.splice(destinationIndex, 0, sourceItem)
 
-		const currentIndexItem = todos.indexOf(currentTodo);
-		const whereToDropIndex = todos.indexOf(todo)
-		if (currentIndexItem < whereToDropIndex) {
-			todos.splice(whereToDropIndex + 1, 0, currentTodo)
-			todos.splice(currentIndexItem, 1)
-		} else {
-			todos.splice(whereToDropIndex + 1, 0, currentTodo)
-			todos.splice(currentIndexItem + 1, 1)
-		}
 		dispatch(changeOrder(todos))
 	}
 
+
 	return (
-		<S.TodoBlock onDragOver={(e) => onDragOverHandler(e)}>
+		<S.TodoBlock>
 			<h1>Pit's TODO list</h1>
 			<Form input={input} isRewrite={isRewrite} setIsRewrite={setIsRewrite} />
-			<ul>
-				{todos.map(todo => <Item
-					key={todo.id}
-					{...todo}
-					setIsRewrite={setIsRewrite}
-					input={input}
-					onDragStartHandler={(e) => onDragStartHandler(e, todo)}
-					onDragLeaveHandler={(e) => onDragLeaveHandler(e)}
-					onDragEndHandler={(e) => onDragEndHandler(e)}
-					onDragOverHandler={(e) => onDragOverHandler(e)}
-					onDropHandler={(e) => onDropHandler(e, todo)} />)}
-			</ul>
+			<DragDropContext onDragEnd={onDragEndHandler}>
+				<Droppable droppableId='todos'>
+					{(provided) => (
+						<ul {...provided.droppableProps} ref={provided.innerRef}>
+
+							{todos.map((todo, index) =>
+								<Item
+									key={todo.id}
+									{...todo}
+									index={index}
+									setIsRewrite={setIsRewrite}
+									input={input} />
+							)}
+
+							{provided.placeholder}
+						</ul>
+					)}
+				</Droppable>
+			</DragDropContext>
 		</S.TodoBlock>
 	);
 }
