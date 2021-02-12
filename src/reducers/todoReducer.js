@@ -1,4 +1,5 @@
-const initialState = [];
+const todosFromLocalStorage = JSON.parse(localStorage.getItem('todos'))
+const initialState = todosFromLocalStorage || [];
 
 const todoReducer = (state = initialState, action) => {
 	switch (action.type) {
@@ -37,7 +38,7 @@ const todoReducer = (state = initialState, action) => {
 			const [sourceItem] = copyState.splice(sourceIndex, 1)
 			copyState.splice(destinationIndex, 0, sourceItem)
 
-			return [...copyState]
+			return [...copyState];
 		default:
 			return state
 	}

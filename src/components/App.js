@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Form from './Form';
 import List from './List';
 // DnD
@@ -6,7 +6,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 // Styles
 import styled from 'styled-components';
 // Redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { changeOrder } from '../actions';
 
 function App() {
@@ -19,6 +19,10 @@ function App() {
 	});
 
 	const dispatch = useDispatch();
+	const todos = useSelector(state => state);
+
+	// Update todos in localStorage if something changes
+	useEffect(() => localStorage.setItem('todos', JSON.stringify(todos)), [todos])
 
 	// Drag
 	const onDragEndHandler = (result) => dispatch(changeOrder(result))
@@ -45,7 +49,7 @@ S.TodoBlock = styled.div`
 	background-color: #0f0b28;
 	border-radius: 15px;
 	box-shadow: 0 0 10px 5px rgba(0,0,0,.6);
-
+	overflow: hidden;
 	h1 {
 		text-align: center;
 		font-weight: 700;

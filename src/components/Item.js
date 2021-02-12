@@ -25,7 +25,7 @@ const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 		setIsDelete(true)
 		setTimeout(() => {
 			dispatch(deleteTodo(id))
-		}, 750);
+		}, 400);
 	}
 
 	const setIsDoneHandler = () => {
@@ -34,42 +34,41 @@ const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 
 
 	return (
-
 		<Draggable draggableId={id} index={index}>
 			{(provided) => (
 				<S.Li
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
-					ref={provided.innerRef}
-				>
-					<AnimatePresence>
-						{!isDelete && <S.TodoItem
-							colors={colors}
-							isDone={isDone}
-							variants={fadeIn}
-							initial='hidden'
-							animate='show'
-							exit='exit'>
-							<div className='todo-content'>
-								<FontAwesomeIcon icon={faBars} size='sm' />
-								<span>{text}</span>
-							</div>
-							<LottieFireWorks isDone={isDone} />
-							<S.Icons className='icons' isDone={isDone}>
-								<FontAwesomeIcon icon={isDone ? faTimesCircle : faCheckCircle} size='lg' onClick={() => setIsDoneHandler()} />
-								<FontAwesomeIcon icon={faPen} size='lg' onClick={() => {
-									setIsRewrite({ cond: true, id, text })
-									input.current.focus();
-								}} />
-								<FontAwesomeIcon icon={faTrashAlt} size='lg' onClick={onDeleteHandler} />
-							</S.Icons>
-						</S.TodoItem>}
-					</AnimatePresence>
+					ref={provided.innerRef}>
+
+					<motion.div variants={fadeIn}>
+						<AnimatePresence>
+
+							{!isDelete && <S.TodoItem colors={colors} isDone={isDone} variants={fadeIn} initial='hidden' animate='show' exit='exit' >
+								<div className='todo-content'>
+									<FontAwesomeIcon icon={faBars} size='sm' />
+									<span>{text}</span>
+								</div>
+								<LottieFireWorks isDone={isDone} />
+								<S.Icons className='icons' isDone={isDone}>
+									<FontAwesomeIcon icon={isDone ? faTimesCircle : faCheckCircle} size='lg' onClick={() => setIsDoneHandler()} />
+									<FontAwesomeIcon icon={faPen} size='lg' onClick={() => {
+										setIsRewrite({ cond: true, id, text })
+										input.current.focus();
+									}} />
+									<FontAwesomeIcon icon={faTrashAlt} size='lg' onClick={onDeleteHandler} />
+								</S.Icons>
+							</S.TodoItem>}
+
+						</AnimatePresence>
+					</motion.div>
+
 				</S.Li>
 			)}
 		</Draggable>
 	)
 }
+
 
 export default Item;
 
