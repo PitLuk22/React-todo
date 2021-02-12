@@ -2,7 +2,7 @@ import React from 'react';
 import Item from './Item';
 // Style
 import { motion } from 'framer-motion';
-import { listAnim, fadeIn } from '../animations'
+import { listAnim } from '../animations'
 // DnD
 import { Droppable } from 'react-beautiful-dnd';
 // Redux
