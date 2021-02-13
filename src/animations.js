@@ -5,7 +5,7 @@ export const listAnim = {
 }
 
 export const fadeIn = {
-	hidden: { opacity: 0, x: 200 },
+	hidden: { opacity: .5, x: 200 },
 	show: { opacity: 1, y: 0, x: 0 },
 	exit: { opacity: 0, x: 800, transition: { duration: .3 } }
 }
