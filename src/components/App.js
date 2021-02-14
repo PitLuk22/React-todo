@@ -19,7 +19,7 @@ function App() {
 	});
 
 	const dispatch = useDispatch();
-	const todos = useSelector(state => state);
+	const todos = useSelector(state => state.todos);
 
 	// Update todos in localStorage if something changes
 	useEffect(() => localStorage.setItem('todos', JSON.stringify(todos)), [todos])
@@ -59,8 +59,9 @@ S.TodoBlock = styled.div`
 	}
 
 	@media(max-width: 576px) {
-		width: 90%;
+		width: 100%;
 		padding: 20px 35px;
+		margin: 0 10px;
 		h1 {
 			font-size: 25px;
 		}

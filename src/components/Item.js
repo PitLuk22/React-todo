@@ -13,19 +13,18 @@ import { faPen, faTrashAlt, faCheckCircle, faTimesCircle, faBars } from '@fortaw
 
 import { Draggable } from 'react-beautiful-dnd';
 
-
 const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 
 	const [isDelete, setIsDelete] = useState(false);
 	const dispatch = useDispatch();
 
-	const { isDone } = useSelector(state => state.find(todo => todo.id === id))
+	const { isDone } = useSelector(state => state.todos.find(todo => todo.id === id))
 
 	const onDeleteHandler = () => {
 		setIsDelete(true)
 		setTimeout(() => {
 			dispatch(deleteTodo(id))
-		}, 400);
+		}, 300);
 	}
 
 	const setIsDoneHandler = () => {

@@ -1,5 +1,8 @@
 const todosFromLocalStorage = JSON.parse(localStorage.getItem('todos'))
-const initialState = todosFromLocalStorage || [];
+const initialState = {
+	todos: todosFromLocalStorage || [],
+	sort: 'all'
+}
 
 const todoReducer = (state = initialState, action) => {
 	switch (action.type) {
@@ -10,35 +13,48 @@ const todoReducer = (state = initialState, action) => {
 				colors: action.payload.colors,
 				isDone: false
 			}
-			return [
+			return {
 				...state,
-				newTodo
-			]
+				todos: [...state.todos, newTodo]
+			}
 		case 'DELETE_TODO':
-			const withoutDeletedItem = state.filter(item => item.id !== action.payload.id);
-			return [
-				...withoutDeletedItem
-			]
+			const withoutDeletedItem = state.todos.filter(item => item.id !== action.payload.id);
+			return {
+				...state,
+				todos: withoutDeletedItem
+			}
 		case 'REWRITE_TODO':
-			const newTodos = state.map(item => {
+			const newTodos = state.todos.map(item => {
 				if (item.id === action.payload.id) {
 					item.text = action.payload.text
 				}
 				return item;
 			})
-			return [...newTodos]
+			return {
+				...state,
+				todos: newTodos
+			}
 		case 'IS_DONE_TODO':
-			return [
-				...state.map(todo => todo.id === action.payload.id ? { ...todo, isDone: !action.payload.isDone } : todo)
-			]
+			return {
+				...state,
+				todos: state.todos.map(todo => todo.id === action.payload.id ? { ...todo, isDone: !action.payload.isDone } : todo)
+			}
 		case 'CHANGE_ORDER':
 			const sourceIndex = action.payload.source.index;
 			const destinationIndex = action.payload.destination.index;
-			const copyState = state.slice();
+			const copyState = state.todos.slice();
 			const [sourceItem] = copyState.splice(sourceIndex, 1)
 			copyState.splice(destinationIndex, 0, sourceItem)
 
-			return [...copyState];
+			return {
+				...state,
+				todos: copyState
+			};
+		case 'SORT_TODOS':
+			return {
+				...state,
+				sort: action.payload
+			}
 		default:
 			return state
 	}

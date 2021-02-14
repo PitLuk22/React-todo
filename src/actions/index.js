@@ -4,7 +4,8 @@ export const addTodo = (id, text, colors) => {
 		payload: {
 			text,
 			id,
-			colors
+			colors,
+			isDone: false
 		}
 	}
 }
@@ -40,3 +41,10 @@ export const changeOrder = (result) => {
 		payload: result
 	}
 }
+export const sortTodos = (typeOfSort) => {
+	return {
+		type: 'SORT_TODOS',
+		payload: typeOfSort
+	}
+}
+

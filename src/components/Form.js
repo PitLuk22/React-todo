@@ -3,10 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 // Styles 
 import styled from 'styled-components';
 // Redux
-import { addTodo, rewriteTodo } from '../actions';
-import { useDispatch } from 'react-redux';
+import { addTodo, rewriteTodo, sortTodos } from '../actions';
+import { useDispatch, useSelector } from 'react-redux';
 // Util
-import colors from '../util';
+import colors from '../util/colors';
 
 const Form = ({ input, isRewrite, setIsRewrite }) => {
 
@@ -15,6 +15,7 @@ const Form = ({ input, isRewrite, setIsRewrite }) => {
 	const [colorCounter, setColorCounter] = useState(0);
 
 	const dispatch = useDispatch();
+	const { sort } = useSelector(state => state);
 
 	useEffect(() => {
 		setInputValue(isRewrite.text)
@@ -46,8 +47,13 @@ const Form = ({ input, isRewrite, setIsRewrite }) => {
 		setInputValue('')
 	}
 
+	// Sort Todos
+	const onSortTodos = (typeOfSort) => {
+		dispatch(sortTodos(typeOfSort))
+	}
+
 	return (
-		<>
+		<S.Wrapper>
 			{isRewrite.cond && <S.Overlay onClick={endRewriting} />}
 			<S.Form onSubmit={(e) => onSubmitHandler(e)}>
 				<input
@@ -59,14 +65,25 @@ const Form = ({ input, isRewrite, setIsRewrite }) => {
 					placeholder={isRewrite.cond ? 'Type to rename your todo' : 'Add a todo'} />
 				<button>{isRewrite.cond ? 'Confirm' : 'Add todo'}</button>
 			</S.Form>
-
-		</>
+			<S.Sort>
+				<button className={sort === 'all' ? 'active' : ''} onClick={() => onSortTodos('all')}>All</button>
+				<button className={sort === 'done' ? 'active' : ''} onClick={() => onSortTodos('done')}>Done</button>
+				<button className={sort === 'in-progress' ? 'active' : ''} onClick={() => onSortTodos('in-progress')}>In progress</button>
+			</S.Sort>
+		</S.Wrapper>
 	)
 }
 
 export default Form;
 
 const S = {};
+S.Wrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 20px;
+`;
 S.Overlay = styled.div`
 	position: absolute;
 	top: 0;
@@ -77,12 +94,53 @@ S.Overlay = styled.div`
 	border-radius: 15px;
 	z-index: 3;
 `;
+S.Sort = styled.div`
+	display: flex;
+	justify-content: flex-start;
+	button {
+		border-radius: 5px;
+		padding: 10px 30px;
+		text-align: center;
+		font-size: 18px;
+		border: none;
+		background-color: #1e0541;
+		color: #fff;
+		font-weight: 400;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: .5s;
+		margin-right: 5px;
+		&:nth-child(1).active {
+			background:linear-gradient(to left, #FF9415, #FFC709);
+			color: #000;
+		}
+		&:nth-child(2).active {
+			background:linear-gradient(to left, #1AC67E, #0AC2B7);
+			color: #000;
+		}
+		&:nth-child(3).active {
+			background:linear-gradient(to left, #2d8bff, #6cbfff);
+			color: #000;
+		} 
+		&:nth-child(3) {
+			margin-right: 0;
+		}
+	}
+	@media(max-width: 576px) {
+		button{
+			padding:  15px;
+			font-size: 10px;
+		}
+	}
+	
+`;
 S.Form = styled.form`
 	position: relative;
+	width: 100%;
+	margin-bottom: 20px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 20px;
 	border: 2px solid #7f0e93;
 	border-radius: 5px;
 	box-shadow: 0 0 10px #8f06a7;

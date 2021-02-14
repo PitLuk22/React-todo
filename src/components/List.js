@@ -7,16 +7,19 @@ import { listAnim } from '../animations'
 import { Droppable } from 'react-beautiful-dnd';
 // Redux
 import { useSelector } from 'react-redux';
+// Util
+import sorting from '../util/sorting';
 
 const List = ({ input, setIsRewrite }) => {
 
-	const todos = useSelector(state => state);
+	const state = useSelector(state => state);
+	const todosForRendering = sorting(state);
 
 	return (
 		<Droppable droppableId='todos'>
 			{(provided) => (
 				<motion.ul variants={listAnim} initial='hidden' animate='show' exit='exit' {...provided.droppableProps} ref={provided.innerRef}>
-					{todos.map((todo, index) =>
+					{todosForRendering.map((todo, index) =>
 						<Item
 							key={todo.id}
 							{...todo}
