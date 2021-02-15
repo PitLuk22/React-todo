@@ -15,6 +15,8 @@ import { Draggable } from 'react-beautiful-dnd';
 
 const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 
+	const [lottie, setLottie] = useState(null)
+
 	const [isDelete, setIsDelete] = useState(false);
 	const dispatch = useDispatch();
 
@@ -29,6 +31,14 @@ const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 
 	const setIsDoneHandler = () => {
 		dispatch(isDoneTodo(id, isDone))
+
+		if (isDone) {
+			// change from true to false
+			setLottie(null)
+		} else {
+			// change from false to true
+			setLottie(<LottieFireWorks isDone={!isDone} />)
+		}
 	}
 
 
@@ -48,7 +58,9 @@ const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 									<FontAwesomeIcon icon={faBars} size='sm' />
 									<span>{text}</span>
 								</div>
-								<LottieFireWorks isDone={isDone} />
+
+								{lottie}
+
 								<S.Icons className='icons' isDone={isDone}>
 									<FontAwesomeIcon icon={isDone ? faTimesCircle : faCheckCircle} size='lg' onClick={() => setIsDoneHandler()} />
 									<FontAwesomeIcon icon={faPen} size='lg' onClick={() => {

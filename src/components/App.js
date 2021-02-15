@@ -25,7 +25,11 @@ function App() {
 	useEffect(() => localStorage.setItem('todos', JSON.stringify(todos)), [todos])
 
 	// Drag
-	const onDragEndHandler = (result) => dispatch(changeOrder(result))
+	const onDragEndHandler = (result) => {
+		if (result.destination) {
+			dispatch(changeOrder(result))
+		}
+	}
 
 	return (
 		<S.TodoBlock>
