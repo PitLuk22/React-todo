@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import Sort from './Sort';
 // Styles 
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { opacity } from '../animations'
 // Redux
@@ -105,6 +105,10 @@ S.Overlay = styled(motion.div)`
 	border-radius: 15px;
 	z-index: 3;
 `;
+const slide = keyframes`
+	0% {transform:translateX(-200%);}
+	100% {transform:translateX(100%);}
+`;
 S.Form = styled.form`
 	position: relative;
 	width: 100%;
@@ -128,6 +132,7 @@ S.Form = styled.form`
 		color: #fff;
 	}
 	button {
+		position: relative;
 		width: 120px;
 		padding: 15px;
 		text-align: center;
@@ -138,8 +143,28 @@ S.Form = styled.form`
 		font-weight: 600;
 		cursor: pointer;
 		transition: .3s;
+		overflow: hidden;
+		&:after {
+			content:'';
+			top:0;
+			transform:translateX(100%);
+			width:100%;
+			height:220px;
+			position: absolute;
+			z-index:1;
+			background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(128,186,232,0) 99%, rgba(125,185,232,0) 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.8)), color-stop(99%,rgba(128,186,232,0)), color-stop(100%,rgba(125,185,232,0))); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* IE10+ */
+			background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#007db9e8',GradientType=1 );
+		}
 		&:hover {
 			color: #e9c5ff;
+			&:after {
+				animation: ${slide} 1s ease;
+			}
 		}
 	}
 	@media(max-width: 576px) {
