@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types'
 import LottieFireWorks from './LottieFireWorks';
 // Redux 
 import { useDispatch, useSelector } from 'react-redux';
@@ -82,6 +83,18 @@ const Item = ({ index, input, id, text, colors, setIsRewrite }) => {
 
 
 export default Item;
+
+Item.propTypes = {
+	index: PropTypes.number,
+	input: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.shape({ current: PropTypes.instanceOf(HTMLInputElement) })
+	]),
+	id: PropTypes.string,
+	text: PropTypes.string,
+	color: PropTypes.arrayOf(PropTypes.string),
+	setIsRewrite: PropTypes.func
+}
 
 const S = {};
 S.Li = styled.li`

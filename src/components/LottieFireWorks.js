@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 // Hook
 import useResize from './hooks/useResize'
 // Lottie 
@@ -28,10 +29,15 @@ const LottieFireWorks = ({ isDone }) => {
 	}
 
 	return (
-		<Lottie options={defaultOptions}
+		<Lottie
+			options={defaultOptions}
 			style={style}
 			isStopped={!isDone} />
 	)
 }
 
 export default LottieFireWorks;
+
+LottieFireWorks.propTypes = {
+	isDone: PropTypes.bool
+}

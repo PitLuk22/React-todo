@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeOrder } from '../actions';
 
-function App() {
+const App = () => {
 
 	const input = useRef(null);
 	const [isRewrite, setIsRewrite] = useState({

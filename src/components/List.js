@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import Item from './Item';
 // Style
 import { motion } from 'framer-motion';
@@ -35,4 +36,12 @@ const List = ({ input, setIsRewrite }) => {
 	)
 }
 
-export default List
+export default List;
+
+List.propTypes = {
+	input: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.shape({ current: PropTypes.instanceOf(HTMLInputElement) })
+	]),
+	setIsRewrite: PropTypes.func
+}

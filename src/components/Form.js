@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
+import Sort from './Sort';
 // Styles 
 import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import { opacity } from '../animations'
 // Redux
 import { addTodo, rewriteTodo, sortTodos } from '../actions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 // Util
 import colors from '../util/colors';
 
@@ -15,7 +19,7 @@ const Form = ({ input, isRewrite, setIsRewrite }) => {
 	const [colorCounter, setColorCounter] = useState(0);
 
 	const dispatch = useDispatch();
-	const { sort } = useSelector(state => state);
+
 
 	useEffect(() => {
 		setInputValue(isRewrite.text)
@@ -47,16 +51,14 @@ const Form = ({ input, isRewrite, setIsRewrite }) => {
 		setInputValue('')
 	}
 
-	// Sort Todos
-	const onSortTodos = (typeOfSort) => {
-		dispatch(sortTodos(typeOfSort))
-	}
-
 	return (
 		<S.Wrapper>
-			{isRewrite.cond && <S.Overlay onClick={endRewriting} />}
+			<AnimatePresence>
+				{isRewrite.cond && <S.Overlay onClick={endRewriting} variants={opacity} initial='hidden' animate='show' exit='exit' />}
+			</AnimatePresence>
 			<S.Form onSubmit={(e) => onSubmitHandler(e)}>
 				<input
+					onKeyDown={e => e.key === 'Escape' && endRewriting()}
 					ref={input}
 					onChange={(e) => setInputValue(e.target.value)}
 					value={inputValue}
@@ -65,16 +67,25 @@ const Form = ({ input, isRewrite, setIsRewrite }) => {
 					placeholder={isRewrite.cond ? 'Type to rename your todo' : 'Add a todo'} />
 				<button>{isRewrite.cond ? 'Confirm' : 'Add todo'}</button>
 			</S.Form>
-			<S.Sort>
-				<button className={sort === 'all' ? 'active' : ''} onClick={() => onSortTodos('all')}>All</button>
-				<button className={sort === 'done' ? 'active' : ''} onClick={() => onSortTodos('done')}>Done</button>
-				<button className={sort === 'in-progress' ? 'active' : ''} onClick={() => onSortTodos('in-progress')}>In progress</button>
-			</S.Sort>
+			<Sort dispatch={dispatch} sortTodos={sortTodos} />
 		</S.Wrapper>
 	)
 }
 
 export default Form;
+
+Form.propTypes = {
+	input: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.shape({ current: PropTypes.instanceOf(HTMLInputElement) })
+	]),
+	isRewrite: PropTypes.shape({
+		cond: PropTypes.bool,
+		id: PropTypes.string,
+		text: PropTypes.string
+	}),
+	setIsRewrite: PropTypes.func
+}
 
 const S = {};
 S.Wrapper = styled.div`
@@ -84,7 +95,7 @@ S.Wrapper = styled.div`
 	align-items: flex-start;
 	margin-bottom: 20px;
 `;
-S.Overlay = styled.div`
+S.Overlay = styled(motion.div)`
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -93,46 +104,6 @@ S.Overlay = styled.div`
 	background-color: rgba(0,0,0, .7);
 	border-radius: 15px;
 	z-index: 3;
-`;
-S.Sort = styled.div`
-	display: flex;
-	justify-content: flex-start;
-	button {
-		border-radius: 5px;
-		padding: 10px 30px;
-		text-align: center;
-		font-size: 18px;
-		border: none;
-		background-color: #1e0541;
-		color: #fff;
-		font-weight: 400;
-		border-radius: 5px;
-		cursor: pointer;
-		transition: .5s;
-		margin-right: 5px;
-		&:nth-child(1).active {
-			background:linear-gradient(to left, #FF9415, #FFC709);
-			color: #000;
-		}
-		&:nth-child(2).active {
-			background:linear-gradient(to left, #1AC67E, #0AC2B7);
-			color: #000;
-		}
-		&:nth-child(3).active {
-			background:linear-gradient(to left, #2d8bff, #6cbfff);
-			color: #000;
-		} 
-		&:nth-child(3) {
-			margin-right: 0;
-		}
-	}
-	@media(max-width: 576px) {
-		button{
-			padding:  15px;
-			font-size: 10px;
-		}
-	}
-	
 `;
 S.Form = styled.form`
 	position: relative;
@@ -157,6 +128,7 @@ S.Form = styled.form`
 		color: #fff;
 	}
 	button {
+		width: 120px;
 		padding: 15px;
 		text-align: center;
 		font-size: 18px;
@@ -181,3 +153,4 @@ S.Form = styled.form`
 		}
 	}
 `;
+
