@@ -1,4 +1,6 @@
 # This todo app was built with React
+<b>This app was made in order to practice in drag and drop technoligies (more precisly in react-beautiful-dnd) and also to consolidate knowledges both in the Reactjs and in the React Hooks</b>
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
